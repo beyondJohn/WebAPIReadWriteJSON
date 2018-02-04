@@ -1,0 +1,71 @@
+@model BeyondLogical.Controllers.Booths
+@{
+    Layout = null;
+
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Sony</title>
+</head>
+<body>
+    <form id="myform" action="~/Controllers/Home/Sony">
+        <div style="padding: 40px;">
+            @{ var adder = 0;}
+            @foreach (var booth in Model.booths)
+            {
+                <div>
+                    Id: <input class="id myclass" id="id_@adder" type="text" value="@booth.id" style="width:40px;" />
+                </div>
+                <div>
+                    Name: <input class="name" id="name_@adder" type="text" value="@booth.name" />
+                </div>
+
+                <div>
+                    Detail: <input class="detail" id="detail_@adder" type="text" style="width:100%;" value="@booth.detail" />
+                </div>
+                <br />
+                adder++;
+            }
+            <button type="button" onclick="btn()">Update Booths</button>
+            <script src="~/js/jquery-2.0.3.min.js"></script>
+            <script>
+                class myclass {
+                    constructor(id, name, detail) {
+                        this.id = id;
+                        this.name = name;
+                        this.detail = detail;
+                    }
+                }
+                function btn() {
+                    var ids = document.querySelectorAll('input[id^="id"]');
+                    var names = document.querySelectorAll('input[id^="name"]');
+                    var details = document.querySelectorAll('input[id^="detail"]');
+                    var myobjecyarray = []
+                    
+                    for (var i = 0; i < ids.length; ++i) {
+                        myobjecyarray[i] = new myclass(ids[i].value, names[i].value, details[i].value);
+                    }
+
+                    // send data to update server 
+                    var mydata = { id: "0", name: "Heywood", detail: "my awesome details", mystrings: JSON.stringify(myobjecyarray) };
+                    $.ajax('/api/sony', {
+                        method: 'POST',
+                        data: mydata,
+                        //datatype: 'json',
+                        success: function (data, textStatus, jqXHR) {
+                            alert("API Updated");
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            alert(errorThrown);
+                        }
+                    });
+                }
+            </script>
+        </div>
+    </form>
+</body>
+</html>
